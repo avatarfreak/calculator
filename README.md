@@ -23,4 +23,8 @@
         Immediate Execution Logic: 11.5
         Formula/Expression Logic: 32.5
 
-### Created using React as Front end framework.
+### Technologies used
+
+    - React as Front end framework.
+    - CSS
+    - Regex
