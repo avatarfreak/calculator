@@ -37,7 +37,7 @@ class App extends Component {
     let { display } = this.state;
     let value = String(display);
     this.setState({
-      display: value.slice(0, -1),
+      display: display == "error" ? 0 : value.slice(0, -1),
       operatorFlag: false
     });
   }
@@ -57,6 +57,7 @@ class App extends Component {
   operators(e) {
     let value = e.target.innerText;
     let { display, operatorFlag } = this.state;
+
     //Allowing only minus sign to be enter
     //if default value zero
     if (value === "-" && display === 0) {
@@ -65,8 +66,7 @@ class App extends Component {
         operatorFlag: true
       });
     }
-    //decimal is getting replace
-    //if display last character  is . then operator is not allowed
+
     if (display !== 0) {
       this.setState({
         display: display + value,
@@ -77,6 +77,8 @@ class App extends Component {
 
     if (operatorFlag) {
       let newValue = String(display);
+      //replacing old operator with new one
+      // "1+3+" to "1+3*"
       newValue = newValue.slice(0, display.length - 1);
       this.setState({
         display: newValue + value,
@@ -87,7 +89,9 @@ class App extends Component {
 
   decimalPeriod(e) {
     let value = e.target.innerText;
+    //destructing
     let { display, decimalFlag } = this.state;
+    //placing decimal in display
     if (!decimalFlag) {
       this.setState({
         display: display + value,
@@ -98,36 +102,37 @@ class App extends Component {
   }
 
   evaluate() {
-    //Assign to display linearEq(immutalbe)
-    let linearEq = this.state.display;
+    //destructing
+    let { display } = this.state;
 
-    //getting last charter from display
-    let lastChar = linearEq[linearEq.length - 1];
+    //Assigning to newEq as String for eval()
+    let newEq = String(display);
 
-    //operator sign present in display
-    let operator = ["*", "+", "-", "/"];
+    //check if two or more operaters in series
+    //if found update it as error
+    //Invalid: "1+3+-/2"
+    if (newEq.match(/\D{2,}/)) {
+      newEq = "error";
 
-    //check if wrong input is given
-    //"1+-2" Or 1+2--
-    if (linearEq.match(/\D{2,}/)) {
       this.setState({
-        display: "error",
+        display: newEq,
         decimalFlag: true
       });
+      return;
+    }
+    //check if last character is not digit
+    //if found then replace it empty space
+    //Eg: "1+3-3+" convert to "1+3-3"
+    if (newEq.match(/[\D]$/)) {
+      newEq = display.replace(/.$/, "");
+    } else {
+      newEq = display;
     }
 
-    //Checking if display last character is operator or period
-    //if operator or period exist then remove it.
-    else if (operator.indexOf(lastChar) > -1 || lastChar === ".") {
-      linearEq = linearEq.replace(/.$/, "");
+    if (newEq) {
       this.setState({
-        //using eval to calculate
-        display: eval(linearEq),
+        display: eval(newEq),
         decimalFlag: true
-      });
-    } else {
-      this.setState({
-        display: eval(linearEq)
       });
     }
   }
