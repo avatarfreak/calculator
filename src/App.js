@@ -33,20 +33,26 @@ class App extends Component {
     });
   }
 
+  //cancel button to delete last character
   cancel() {
     let { display } = this.state;
     let value = String(display);
     this.setState({
-      display: display == "error" ? 0 : value.slice(0, -1),
+      display: display === "error" ? 0 : value.slice(0, -1),
       operatorFlag: false
     });
   }
+
+  //handle all  digits
   handleClick(e) {
     let value = e.target.innerText;
     let { display } = this.state;
 
     let input = 0;
+    //parsing string to number in order
+    //adding mutiples of '0000' will show 0
     input += parseFloat(value);
+
     //replacing default value zero with enter value
     this.setState({
       display: display === 0 || display === "error" ? input : display + value,
@@ -55,6 +61,7 @@ class App extends Component {
   }
 
   operators(e) {
+    //+ - / *
     let value = e.target.innerText;
     let { display, operatorFlag } = this.state;
 
