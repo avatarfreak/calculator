@@ -1,0 +1,216 @@
+ var queue = [];
+        var input = 0;
+        function calculateQueue(value){
+            if (input !==0) {
+            input = parseFloat(input);
+
+                addToQueue(input);
+                            }
+            var answer = value[0];
+            var dividedByZero = 0;
+            for (  var i = 2; i < value.length; i= i+2) {
+
+                switch (queue[i-1]) {
+                    case '+':
+                        answer+= value[i];
+                        break;
+                    case '-':
+                        answer-= value[i];
+                        break;
+                    case '/':    if (value[i] === 0)   dividedByZero = 1;
+                            else      answer = answer / value[i];
+
+                        break;
+                    case'*': answer = answer * value[i];
+                        break;
+                }
+
+            }
+
+            answer = answer.toFixed(10);
+            answer = parseFloat(answer);
+            if ( dividedByZero === 1) { clearAll();
+                document.getElementById("answer").innerHTML =  "ERROR";}
+            else
+            {document.getElementById("answer").innerHTML =  answer ;
+                input = answer;
+            queue = [];}
+
+
+        }
+        function addToQueue(input){
+            queue.push(input);
+        }
+        function clearAll() {
+            queue = [];
+            input = 0;
+            document.getElementById("answer").innerHTML = "0";
+        }
+        function numericButton(arg){
+            if ( document.getElementById("answer").innerHTML ===  "ERROR" || (document.getElementById("answer").innerHTML == "0" && arg != "."))
+              { document.getElementById("answer").innerHTML = ""; }
+
+            if (!(arg === ".") || !input.match(/[.]/)) {
+
+            input += arg;
+            document.getElementById("answer").innerHTML += arg;}
+
+
+        }
+        function operatorButton(arg){
+            if (input !== 0 && input !== "-") {
+                input = parseFloat(input);
+                addToQueue(input);
+                addToQueue(arg);
+                document.getElementById("answer").innerHTML +=arg;
+                input = 0;
+
+            }
+            if (arg == "-"  && isNaN(queue[0]) && input !== "-")
+            {input ="-";
+
+                document.getElementById("answer").innerHTML = "-";
+
+
+          }
+
+
+        }
+
+
+        class Application extends React.Component {
+  constructor(props){
+    super(props)
+    this.state={
+      currentNumber: "0",
+      operatorFlag:false,
+      decimalFlag:false
+    }
+  }
+  
+  handleClick = (buttonName) => {
+    let currentNumber = this.state.currentNumber
+    let operatorFlag = this.state.operatorFlag
+    switch(true){
+        case buttonName === "0" ||
+             buttonName === "1" ||
+             buttonName === "2" ||
+             buttonName === "3" ||
+             buttonName === "4" ||
+             buttonName === "5" ||
+             buttonName === "6" ||
+             buttonName === "7" ||
+             buttonName === "8" ||
+             buttonName === "9" :
+        if(this.state.currentNumber!=="0"){
+        currentNumber += buttonName
+        operatorFlag = false
+        }else{
+        currentNumber = buttonName
+        }
+        break
+        case buttonName === "+" ||
+             buttonName === "-" ||
+             buttonName === "*" ||
+             buttonName === "/" :
+        if(!this.state.operatorFlag){
+          currentNumber += buttonName
+          operatorFlag = true
+          this.setState({decimalFlag:false})
+        }else{
+          const newNumber = currentNumber.slice(0,currentNumber.length-1)
+          currentNumber = newNumber
+          currentNumber += buttonName
+        }
+        break
+        case buttonName === "C":
+          currentNumber = "0"
+          operatorFlag = false
+          this.setState({decimalFlag:false})
+        break
+        case buttonName === "=":
+          currentNumber = eval(currentNumber)
+          operatorFlag = false
+          this.setState({decimalFlag:true})
+        break
+        case buttonName === ".":
+          if(!this.state.decimalFlag){
+            currentNumber += "."
+            this.setState({decimalFlag:true})
+          }
+    }
+    this.setState({operatorFlag})
+    this.setState({currentNumber})
+  } 
+  
+  render(){
+    return(
+     <div>
+        <div id="calcGrid">
+        <Screen id="display" currentNumber={this.state.currentNumber} />
+        <Button id="zero" name="0" handleClick={this.handleClick} />
+        <Button id="one" name="1" handleClick={this.handleClick} />
+        <Button id="two" name="2" handleClick={this.handleClick} />
+        <Button id="three" name="3" handleClick={this.handleClick} />
+        <Button id="four" name="4" handleClick={this.handleClick} />
+        <Button id="five" name="5" handleClick={this.handleClick} />
+        <Button id="six" name="6" handleClick={this.handleClick} />
+        <Button id="seven" name="7" handleClick={this.handleClick} />
+        <Button id="eight" name="8" handleClick={this.handleClick} />
+        <Button id="nine" name="9" handleClick={this.handleClick} />
+        <Button id="clear" name="C" handleClick={this.handleClick} />
+        <Button id="equals" name="=" handleClick={this.handleClick} />
+        <Button id="decimal" name="." handleClick={this.handleClick} />
+        <Button id="add" name="+" handleClick={this.handleClick} />
+        <Button id="subtract" name="-" handleClick={this.handleClick} />
+        <Button id="multiply" name="*" handleClick={this.handleClick} />
+        <Button id="divide" name="/" handleClick={this.handleClick} />
+        </div>
+     </div>
+    );
+  }
+}
+
+class Screen extends React.Component{
+  render(){
+    return(
+    <div id={this.props.id}>
+        {this.props.currentNumber}
+    </div>
+    )
+  }
+}
+
+class Button extends React.Component{
+  runParentHandleClick = () => {
+    this.props.handleClick(this.props.name)
+  }
+  render(){
+    return(
+    <button id={this.props.id} onClick={this.runParentHandleClick} className="button">{this.props.name}</button>
+    )
+  }
+}
+
+React.render(<Application />, document.getElementById('app'));
+
+
+
+
+
+
+       if (!operatorFlag) {
+      this.setState({
+        display: display + value,
+        operatorFlag: true,
+        decimalFlag: false
+      });
+    } else {
+      const newOperator = display;
+      const opr = newOperator.slice(0, display.length - 1);
+      display = opr + value;
+      this.setState({
+        display: opr + value,
+        operatorFlag: true
+      });
+    } 
