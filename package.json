@@ -1,7 +1,7 @@
 {
-  "name": "drum-machine",
+  "name": "calculator",
   "version": "0.1.0",
-  "homepage": "https://avatarfreak.github.io/drum",
+  "homepage": "https://avatarfreak.github.io/calculator",
   "private": true,
   "dependencies": {
     "gh-pages": "^2.0.1",
